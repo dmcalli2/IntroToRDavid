@@ -1,9 +1,8 @@
 ---
-title: "Exercises"
-author: "Background to R"
-date: "October 31st 2016"
+title: "Answers Notebook"
 output: html_notebook
 ---
+
 
 # Exercise 1 no exercises lecture 1
 
@@ -11,11 +10,35 @@ output: html_notebook
 Look at the following code, guess what kind of object this will create, then check what is created using typeof, str() or class()
 
 1. c(35, 46, 17, 58,2)
+```{r}
+quickfx <- function(my_object = c(35, 46, 17, 58,2)){
+  res <- lapply(list(identity, class, typeof), function(x) x(my_object))
+  names(res) <- c("object", "class", "type")
+  print(res)
+}
+quickfx()
+```
 2. c( 34, 1, "l", TRUE)
+```{r}
+quickfx(c( 34, 1, "l", TRUE))
+```
 3. c(T,F,T,F)
+```{r}
+quickfx(c(T,F,T,F))
+```
 4. cbind (c(1,0,0), c(0,1,0), c(0,0,1))
+```{r}
+quickfx(cbind (c(1,0,0), c(0,1,0), c(0,0,1)))
+```
+
 5. cbind (c("a", "b", "c"), c (1,2,3))
+```{r}
+quickfx(cbind (c("a", "b", "c"), c (1,2,3)))
+```
 6. data.frame (var1 = 1:10, var2 = letters[1:10], var3 = rep(1:2,5), stringsAsFactors = FALSE )
+```{r}
+quickfx(data.frame (var1 = 1:10, var2 = letters[1:10], var3 = rep(1:2,5), stringsAsFactors = FALSE ))
+```
 
 # Exercise 3 Working with vectors
 type set.seed (1234) and hit return
