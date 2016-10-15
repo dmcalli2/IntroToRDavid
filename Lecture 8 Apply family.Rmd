@@ -1,0 +1,112 @@
+---
+title: "Lecture 8 Applying functions"
+author: David A McAllister
+date: 5th August 2014
+output: ioslides_presentation
+---
+
+## Objective of section
+* To understand how apply functions work
+* To use apply functions to avoid repetition
+
+# "Don't repeat yourself"
+### Andy Hunt and Dave Thomas
+
+## Use apply family of functions to avoid looping
+
+* lapply - apply functions to lists
+* sapply - a wrapper for lapply which simplifies the output as much as possible
+* tapply - apply to a dataframe (generally) split by a factor
+* apply - apply across rows and/or columns of a matrix-like object
+* others like by, aggregate etc, but I don't use because I prefer plyr. However, we will use `by` in the next but one exercise
+
+## Why 
+* Makes code more readable
+* It is not faster
+* Makes code more transferrable, takes care of looping
+
+# lapply and sapply
+
+## lapply returns lists
+```{r,}
+# Works on a list and returns a list
+lapply (cars, mean)
+# sapply similar, but "s"implifies to a vector or matrix 
+sapply (cars, range)
+```
+
+## The apply functions accept extra arguments
+```{r, echo = -(2)}
+args (lapply)
+cars.missing <- cars 
+cars.missing [1,1] <- NA
+lapply (cars.missing, mean, na.rm = TRUE)
+```
+
+## If used with [] can replace values in dataframe
+```{r}
+MakeNAFunction <- function (x, cutpoint = 0.1, ...) {
+  ifelse (x<quantile(x,cutpoint), NA, x)}
+cars [] <- lapply (cars, MakeNAFunction, 0.05)
+cars[1:4,]
+data(cars)
+```
+
+# tapply runs function on cuts of data
+
+## single value
+```{r}
+chickwts[1:3,]
+# can return a vector or array
+a <- tapply (chickwts$weight, chickwts$feed, length)
+a
+is.atomic(a)
+```
+
+## tapply can have multiple indices
+```{r}
+chickwts$water <- sample (c("hard", "soft"), length(chickwts$weight), 
+                          replace = TRUE)
+chickwts[1:3,]
+tapply (chickwts$weight, list(chickwts$feed, chickwts$water), mean)
+```
+
+## Multiple values
+```{r}
+b <- tapply (chickwts$weight, chickwts$feed, quantile)
+str(b)
+```
+
+## Multiple values and do.call
+```{r}
+do.call (cbind, b)
+```
+but this is complex, why I often use plyr
+
+
+# Apply
+
+## Apply
+- Works on a matrix
+- Need to specify rows (dimension 1) or columns (dimension 2)
+
+## Apply with single values
+``` {r, echo = -2}
+mymatrix <- matrix (1:4, nrow = 2)
+mymatrix
+apply (mymatrix, 1, mean)
+apply (mymatrix, 1:2, mean)
+```
+
+## Apply with functions returning values length >1
+```{r}
+mymatrix <- matrix (rpois (100, 5), ncol = 5)
+# can be useful where vector is returned
+apply (mymatrix, 2, summary)
+```
+
+## Not much use with functions returning lists
+```{r}
+apply (mymatrix, 1:2, poisson.test)[1:5,]
+```
+# Which is one of the many motivations for writing your own functions

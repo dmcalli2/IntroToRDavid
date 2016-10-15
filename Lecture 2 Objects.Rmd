@@ -1,0 +1,115 @@
+---
+title: 'Lecture 2: Objects'
+author: "David McAllister"
+date: "Monday, June 30, 2014"
+output: ioslides_presentation
+---
+
+## Objective of session
+
+* Describe the differen't types of R objects
+* Describe how R coerces differnt types of atomic vectors
+
+
+## Much of the following is taken from
+Advanced R by Hadley Wickham
+http://adv-r.had.co.nz/
+
+## Types of data object
+
+|    | Homogeneous   | Heterogeneous |
+|----|---------------|---------------|
+| 1d | Atomic vector | List          |
+| 2d | Matrix        | Data frame    |
+| nd | Array         |               |
+
+  
+## Atomic vectors
+
+* Logical, integer, double (numeric) and character
+
+* Logical > integer > double > character
+
+* Must be the same type
+
+* created with c() for combine
+
+## Quiz
+
+What will you get if you do the following ...
+```{r, eval=FALSE}
+c(1L, 6L, 10L)
+
+c(1.1, 2.1, 4.5)
+
+c(1, 2, 4.1, "missing")
+
+c(TRUE, FALSE, 1)
+```
+When try to combine differnt't types changes vector type
+* runs down the hill
+  
+## Lists versus vectors
+``` {r}
+object1 <- c (1, 2, 3)
+object2 <- c ("a", "b", "c", "d", "e")
+c(object1, object2)
+list1 <- list (object1, object2)
+str (list1)
+```
+
+## Lists are recursive
+``` {r}
+list2 <- list (list1, list1)
+str(list2)
+list3 <- c (list1, list1)
+str(list3)
+```
+
+## Matrices
+2d extention of vectors
+```{r}
+mymatrix <- matrix (1:25, nrow = 5)
+print (mymatrix)
+dim (mymatrix)
+```
+
+## Data frames
+* Type of list
+    + Allows multiple types; eg character, double, logical
+    + Has dimensions
+```{r}
+head (iris)
+dim(iris)
+```
+
+## Create data frame
+```{r}
+mydata <- data.frame (people = c("Sarah", "Nynke", "Colin", "Stephanie"),
+                      gender = c(0,0,1,0),
+                      stringsAsFactors = FALSE)
+mydata
+str( as.list (mydata))
+```
+
+## Names
+
+```{r}
+# Vectors can have names
+c(one = 1, two = 2)
+# Matrices have colnames and rownames
+matrix (1:4, nrow = 2, dimnames = list(c("one", "two"), c("A", "B")))
+# Dataframes have names
+names(iris)
+```
+
+## Objects have default methods
+
+* Determined by class, allows OOP style
+```{r, echo = -3}
+a_vector <- rep(1:5, 2)
+a_matrix <- matrix (a_vector, nrow = 5)
+par(mfcol = c(1,2))
+plot(a_vector)
+plot(a_matrix)
+```

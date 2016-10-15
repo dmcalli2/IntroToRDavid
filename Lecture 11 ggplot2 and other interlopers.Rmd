@@ -1,0 +1,122 @@
+---
+title: "Lecture 11 ggplot2 and other interlopers"
+author: "David McAllister"
+date: "Tuesday, August 5th, 2014"
+output: ioslides_presentation
+---
+
+## Objectives of session
+
+* To get a flavour of ggplot2
+* See SQL and BUGS as examples of R interacting with other software
+
+
+## Idea behind ggplot2
+
+- Grammar of graphics
+  + completely describes all standard graphics eg scatterplot, line, bar-chart
+    + mapping of aesthetics, eg x = time, y = rate, colour = sex
+    + geoms - dots, lines, ribbons, 
+- Tufte's advice on visual display
+
+# Encourages good graph design which presents all data together with summaries
+
+## Example
+```{r, echo=FALSE}
+library(reshape2)
+df <- data.frame (id = 1:20, age = rep(1:10,2), sex = rep(c("male", "female"),each = 10))
+df <- df[rep(1:nrow(df),5),]
+df$t <- rep(0:4, each = 20)
+df$value <- with (df, age* 0 + 1.2*t + age*t*0.8 + rnorm (length(age), mean = 0, sd = 2))
+df <- dcast (df, id + age + sex ~ t, value.var = "value")
+df.melt <- melt(df, id = c("id", "age", "sex"))
+df.melt$time <- as.numeric (df.melt$variable)
+df.melt$variable <- NULL
+df.melt
+```
+
+## Code for plot
+```{r}
+library (ggplot2)
+plot1 <- ggplot (df.melt, 
+                aes(x = time, y = value, colour = age, group = id)) +
+                geom_point() +
+                geom_line () +
+                facet_grid (.~sex) 
+```
+
+## Change over time
+```{r}
+plot1
+```
+
+## Why is it an interloper
+- Funny use of +
+- completely seperate to base R graphics
+- No generic functions
+  + if want to use it, understand lists and extract what you want
+- Very nice striking graphics
+
+## SQL within R
+RSQLITE, RMySQL, SQLDF
+```{r,eval= FALSE}
+omopcon <- dbConnect(MySQL(), user=Sys.getenv("USER"), password=Sys.getenv("DBPASS"),
+                     dbname="OMOP_2011", host="localhost")
+
+dutasteride <- dbGetQuery (omopcon, 
+          "SELECT * FROM o_drug_era INNER JOIN o_concept_drugs
+             ON o_drug_era.concept_id = o_concept_drugs.UID
+             WHERE drugname RLIKE 'DUTASTERIDE|AVODART'")
+dbDisconnect(omopcon)
+```
+
+## Passes strings
+All of these packages pass strings to other programs, retrieve output as objects in R
+
+## SQL
+- SELECT statement workhorse
+- Easy to understand (unlike database design etc)
+![alt text](figures/sams.jpg)
+- Careful about
+    + dots
+    + changing variable types (work with characters)
+    + example using Dundee server
+  
+## R2JAGS, the model
+```{r, eval = FALSE}
+modelString = "
+# JAGS model specification begins ...
+model {
+    # Likelihood:
+    for ( i in 1:n ) {
+        y[i] ~ dbern( theta )
+    }
+    # Prior distribution:
+    theta ~ dbeta( 1, 1 )
+# Sample from the distribution estimating the prevalence 
+# of the exposure in controls
+     control ~ dbeta(10,40)
+# Calculate the differences in proportions, ratios for 
+# exposure and odds ratio
+     oddscase <- theta/(1-theta)
+     oddscontrol <- control/(1-control)
+}
+"
+# Write the modelString to a file, using R commands:
+writeLines(modelString,con="model.txt")
+```
+
+## Execution and data
+```{r, eval = FALSE}
+dataList = list(
+    n = 13 ,
+    y = c( 1,1,1,1,1,1,1,1,1,1,1,1,1 ))
+jags <- jags.model('model.txt',
+                   data = dataList,
+                   n.chains = 1,
+                   n.adapt = 1000)
+update(jags, 1000)
+```
+
+## rjags
+As for SQL pass string to another program, JAGS, and get data back

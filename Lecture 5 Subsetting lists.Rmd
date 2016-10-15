@@ -1,0 +1,131 @@
+---
+title: 'Lecture 5: Subsetting other objects'
+author: "David McAllister"
+date: "Monday, June 30, 2014"
+output: ioslides_presentation
+---
+
+## Objective of section
+* To use subsetting on lists, matrices and dataframes
+* To describe how R changes object type with subsetting
+
+## Much of the following is taken from
+Advanced R by Hadley Wickham
+"http://adv-r.had.co.nz/"
+
+# Lists
+
+## Subsetting lists
+Similar, but lists contain objects
+
+```{r}
+bigworm <- list (segment1 = 1:20, segment2 = letters[1:10])
+str(bigworm)
+str(bigworm[1]) # single hooks chop the worm, now got another worm
+str(bigworm[[1]]) # second hook to slice it open
+str(bigworm$segment1) # dollar sign is double hooks wrought together
+```
+
+## Can unlist, but ...
+```{r}
+unlist (bigworm)
+```
+
+## Lists are recursive, metaphor breaks down
+```{r, eval = -4}
+outside.list <- list (inside.list1 = list (vector1 = 1:20,
+                                           vector2 = letters[1:10]),
+                      inside.list2 = list (7,8,9))
+str(inside.list1) # R can't see it
+str(outside.list)
+```
+
+## Absurd structures, eg a list with a single list inside
+```{r}
+str(outside.list[1])
+str(outside.list[[1]])
+```
+
+## Complicated nesting
+```{r}
+str(outside.list$inside.list1$vector1)
+str(outside.list$inside.list2)
+
+# Synonymously
+str(outside.list[[1]][[1]])
+```
+
+## What's the point?
+
+Functions produce single objects
+
+* complex functions produce lists
+* Need to use lists
+    * Create functions
+    * extract from functions
+* Dataframes are lists
+    * usually composed entirely of vectors, but occassionally not
+
+# Matrices
+
+## Matrices
+Simple generalisation of vector subsetting
+```{r}
+a <- matrix (1:25, nrow = 5, dimnames = list (paste ("rows",1:5), 
+                                              paste ("cols",1:5)))
+
+# Integer subsetting
+a [1,1]
+a [1,]
+a [,1]
+```
+
+## Matrices continued
+```{r}
+# Logical subsetting
+a [ c(T,F,F,F,F) ,c(T,T,F,F,F)]
+
+# Character subsetting
+a [ c("rows 1", "rows 2"), c("cols 1", "cols 2")]
+a [ c("rows 1", "rows 1"), ]
+
+```
+
+# Dataframes
+
+## Dataframes, mixture of both
+
+```{r}
+head(iris)
+dim (iris)
+# Integer
+iris [2, 1]
+iris [2,]
+
+# Character
+iris [1:3, "Sepal.Width"]
+
+# Logical - very powerful
+iris [iris$Species == "setosa" & iris$Sepal.Width >= 4, c("Sepal.Length", "Sepal.Width")]
+
+```
+
+## Dataframes and dropping-down
+```{r}
+str(iris$Sepal.Length)
+str(iris[,1])
+str(iris [[1]])
+str(iris [1])
+```
+
+## Summary of operators
+
+|             | Simplifying               | Preserving                                   | Simplification
+|-------------|---------------------------|----------------------------------------------| ------------
+| Vector      | `x[[1]]`                  | `x[1]`                                       | Loses names
+| List        | `x[[1]]`                  | `x[1]`                                       | *Shells* list
+| Factor      | `x[1:4, drop = T]`        | `x[1:4]`                                     | Loses labels
+| Array       | `x[1, ]` __or__ `x[, 1]`  | `x[1, , drop = F]` __or__ `x[, 1, drop = F]` | Becomes vector
+| Data frame  | `x[, 1]` __or__ `x[[1]]`  | `x[, 1, drop = F]` __or__ `x[1]`             | Becomes vector
+
+Modified from Hadley Wickham

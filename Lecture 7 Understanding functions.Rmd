@@ -1,0 +1,120 @@
+---
+title: "Lecture 7 Understanding functions"
+author: David A McAllister
+date: 6th August 2014
+output: ioslides_presentation
+---
+
+## Objective of section
+* To describe parts of a function
+* To describe how R matches arguments
+* To understand where R looks for values
+* To understand how functions (don't) modify the workspace
+* To identify side-effects
+
+# See Hadley Wickham again
+
+## Everything that exists is an object. Everything that happens is a function call
+### John Chambers
+
+## Function components
+
+All R functions have three parts
+
+* the `body()`, the code inside
+
+* the `formals()`, the list of arguments
+
+* the `environment()`, the "map" of the location of the function's variables
+
+```{r, eval = FALSE}
+f <- function(x) x^2
+```
+
+## Primitive functions
+Primitive functions, like `sum`, call C code directly and contain no R code.
+Therefore their `formals()`, `body()` and `environment()` are all `NULL`
+
+## Arguments
+
+* Arguments to functions are matched by R on
+    * position, eg `lm (y ~ x, mydata)` 
+    * name, eg `lm ( formula = y ~ x, data = mydata)`
+    * partial name, eg `lm (form = y ~ x, dat = mydata)`
+* name trumps position
+    * Use position for 1st or 2nd arguments only `f (,3,,5)`
+* Default values are often used ` mean(x, trim = 0, na.rm = FALSE, ...) `
+* Defaults can be other arguments `factor (x = character(), levels, labels = levels)`
+
+## An aside about readable code
+```{r}
+args(glm)
+model1 <- glm (formula = "speed ~ dist", family = gaussian, data = cars) # overkill
+model1 <- glm (speed ~ dist, data = cars) # about right
+model1 <- glm (speed ~ dist, , cars) # awful
+```
+Use argument name for anything past first or second argument
+
+## Lexical scoping
+
+* Inside function first
+* then outside (bad coding)
+```{r}
+x <- 1
+y <- 2
+MyFunction <- function (x){
+  x * y
+}
+
+MyFunction (10)
+```
+
+## Only copies modified
+```{r}
+x <- 1
+y <- 2
+MyFunction <- function (x,y){
+  x <- x+10
+  y <- y + 100
+  c(x,y)
+}
+MyFunction (5,15)
+c(x,y)
+```
+
+## Only returns a single object
+### This is why lists are so common in functions
+
+## Except ..., Side effects
+``` {r, eval = FALSE}
+plot(x)
+write.csv (x, file = "myout.csv")
+setwd("c:/Users/David/myfolder")
+# Or if a function uses superassignment
+<<- # considered bad practice
+```
+
+## Replacement and infix
+```{r}
+# Replacement
+names(cars)
+names (cars) <- c("velocity", "displacement")
+names(cars)
+
+# Infix
+`+`(1,2)
+
+```
+Can you think of any other replacement functions
+
+## A word on quotes
+
+- Generally quotes are needed for variables as these are vectors within dataframes
+```{r, eval = FALSE}
+newdata <- merge (df1, df2, by = "linkID")
+```
+
+- for interactive use, as a convenience some functions accept both
+- involves complex programming
+  + don't try in your own functions
+  + careful about doing it in others functions, might not always work

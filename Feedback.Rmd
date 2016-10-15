@@ -1,0 +1,14 @@
+---
+title: "Feedback"
+author: "David McAllister"
+date: "Tuesday, August 05, 2014"
+output: word_document
+---
+# Feedback
+### Look! We have no Likert scales or visual analogue scales.
+
+## 1. What went well?
+
+## 2. What wasn't so good?
+
+## 3. Anything else we should add?

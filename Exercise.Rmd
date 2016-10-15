@@ -1,0 +1,146 @@
+---
+title: "Exercises"
+author: "Background to R"
+date: "October 31st 2016"
+output: pdf_document
+---
+
+# Exercise 1 no exercises lecture 1
+
+# Exercise 2 Objects
+Look at the following code, guess what kind of object this will create, then check what is created using typeof, str() or class()
+
+1. c(35, 46, 17, 58,2)
+2. c( 34, 1, "l", TRUE)
+3. c(T,F,T,F)
+4. cbind (c(1,0,0), c(0,1,0), c(0,0,1))
+5. cbind (c("a", "b", "c"), c (1,2,3))
+6. data.frame (var1 = 1:10, var2 = letters[1:10], var3 = rep(1:2,5), stringsAsFactors = FALSE )
+
+# Exercise 3 Working with vectors
+type set.seed (1234) and hit return
+This is so we all get the same answer
+
+1. Create a vector a of 10 realisations from the standard normal distribution, use rnorm (10, mean = 0, sd = 1)
+2. Calculate max, min, sum of values greater than 1, sum of values less than 1
+3. Create a vector b from a standard normal distribution
+4. Take the maximum of a and b for each element
+5. Identify the number of elements where a > b. What did R do when you ran this?
+
+# Exercise 4 Subsetting vectors
+set.seed (1234)
+
+1. Create a vector, x from a Poisson distribution of length 10, with lambda = 5, use rpois
+2. Select the first and last elements using an integer vector
+3. select all but the first element
+4. Return the vector according to the numerical order in two ways. First using `sort`, then using `order`. Why is `order` more general, ie what could you acheive with order that you could not acheive with `sort`?
+5. Use logical subsetting to select all values of x which are >5
+6. In a single line, identify the minimum value of x which is greater than 3
+  + Create a vector 
+```{r}
+b <- c(a = 1, b = 2, c = 3, d = 4, e = 5)
+b
+```
+7. Return a vector from these elements repeating the first and second element 3 times and twice respectively, using the names attribute of the vector
+8. Assign NA to all values of x >5
+9. Add 0.5 to any values less than 5. **Hint, need to use is.na and the "&" operator. Also need to consider the length of the vector to the left and to the right of the assignment operator `<-`.**
+
+# Exercise 5 Subsetting other objects
+1. Run the following and answer the following questions
+```{r, eval = FALSE}
+model1 <- lm(Sepal.Length ~ Species, data = iris)
+summary (model1)
+str(model1)
+length(model1)
+length(unlist(model1))
+```
+  + What type of object does model 1 produce?
+  + what are its attributes?
+  + how are these items organised?
+  + what happens when you unlist?
+
+2. Extract the coefficients for the model using the coef(model1) function and using indexing
+3. Extract the Species factor from the model using 3 kinds of indexing, what kind of objects do you get with each
+4. Turn the swiss dataset into a matrix `swiss <- as.matrix (swiss)`
+5. Select all first and third columns and second and fourth rows, use 2 methods
+6. Select a single row, first in a way which produces a vector then in a way which produces another matrix. What attributes persist with each method?
+7. Calculate the count, mean and sum of all the values are between 25 and 30 
+8. Select all the rows for towns with Rive in the names (use the grepl and rownames functions)
+9. remove all objects from workspace and create swiss as a matrix and a dataframe, then index each using the following methods.
+
+```{r}
+data(swiss)
+swiss.m <- as.matrix(swiss)
+swiss.df <- swiss
+```
+  + [1]
+  + [[1]]
+  + [1:3, 1:2]
+  + ["Rive Droite", "Education"]
+  + [swiss > 50] # this is an example of indexing with an array
+
+
+# Exercise 6 working with factors
+1. load in the esoph data , `data (esoph)` (not really necessary but in case modfied it) and look at the help file.
+2. what class is each of the variables
+3. Repace alcohol consumption "120+" with "120 to 150" using indexing with a logical test
+  + You can also do this using ifelse.
+```{r, eval = FALSE}
+a<- ifelse(esoph$alcgp == "120+", "120 to 150", esoph$alcgp)
+b<- ifelse(esoph$alcgp == "120+", "120 to 150", as.character(esoph$alcgp))
+table(a,b)
+```
+    + What has R done differently in each case?
+4. Dichotomise alcohol consumption into >=80 or <80
+5. Run the regression models
+```{r, eval = FALSE}
+model1 <- glm(cbind(ncases, ncontrols) ~ tobgp, data = esoph, family = binomial())
+model2 <- glm(cbind(ncases, ncontrols) ~ factor(tobgp, ordered = FALSE), data = esoph, 
+              family = binomial())
+```
+what has R done differently?
+
+# Exercise 7 Using functions
+1. Don't write this down, just look at the menu and get a feel. For c, summary, mean, glm, and plot
+  + Is it a generic, primitive, S3 or S4 function
+  + What type of object does the first argument accept
+  + Which arguments are optional
+  + What type of object is output
+  + What does the function return if supplied with missing values
+2. What will R do if a function argument is not supplied and there is no default?
+3. What values will `print (c(a = a, b = b))` result in. Guess before running.
+```{r, eval = FALSE}
+a <- 1
+b <- 4
+MyFunction <- function (a, b) {
+  a <- a + 1
+  b <<- b + 1
+}
+MyFunction (a = 2, b = 6)
+print (c(a = a, b = b))
+```
+
+# Exercise 8 apply family
+1. In the iris dataset use tapply to calculate the mean Sepal length according to Species 
+2. Use lapply to determine the class of each variable and then the mean of each variable
+  + How does the R function lapply handle the character vector? What would `mean` have returned if used without an apply function for a character atomic vector?
+3. For the vectors of class "numeric", use apply to calculate row sums and column sums and compare the results with rowSums and colSums. [* Hint: Use subsetting to select these columns before trying to use `apply`*]
+
+
+# Exercise 9 writing functions
+1. Look at the esoph dataset type ?esoph into R
+2. Summarise the total number of cases and controls by age group
+3. Create a variable where the value is true for heavy smokers, defined as >19 gm per day of tobacco
+4. Check that there are heavy smokers in each age group
+5. Run a logistic regression model of oesophageal cancer on smoking for the whole dataset (have a look at the bottom of the ?esoph page for how to do this with aggregated data)
+6. Write a function which will extract the odds ratio for smoking > 19gm/day for each age group stratum.
+Use the following steps, similar to the example in the previous session
+  + simplify the problem, keeping the same object type
+  + work interactively
+  + write function
+  + test function on different subsets
+  + run function using the **by** function, which belongs to the apply family of functions
+7. Why couldn't we use `tapply`? look at the help for the first argument in `tapply` and `by`
+8. What kind of object does `by` produce?
+
+

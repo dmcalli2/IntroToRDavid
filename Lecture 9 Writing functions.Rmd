@@ -1,0 +1,123 @@
+---
+title: "Lecture 9 Writing functions"
+author: David A McAllister
+date: 5th August 2014
+output: ioslides_presentation
+---
+
+## Objective of section
+* To see how a function is just like interactive R work
+
+# "Don't repeat yourself"
+### Andy Hunt and Dave Thomas
+
+## Use functions to avoid repeating yourself
+
+* Reduces chances of error
+* Makes code easier to change
+* Makes code more readable (once you get your eye in)
+* Makes code more transferrable
+
+# Problem
+Matrix 10 x 5. 10 hospitals and 5 timepoints.
+
+Do any of the hospitals/timepoints have a high mortality?
+
+Expected mortality is 100.
+
+Want to do a statistical test on each cell.
+
+## Our data
+```{r}
+set.seed(1234)
+hospitals <- matrix(rpois(50,120), nrow = 10, 
+                    dimnames = list(paste("hosp", 1:10), paste("t", 1:5)))
+hospitals[cbind (c(2,3,4),c(1,2,3))] <- NA
+hospitals
+```
+
+## Simplify the problem
+```{r}
+hospital <- hospitals[1,1, drop = FALSE]
+```
+
+## Work interactively
+```{r}
+# poisson.test (x = hospital, r = 100)
+poisson.test (x = as.vector(hospital), r = 100)
+```
+
+## ?poisson.test
+Value
+A list with class "htest" containing the following components:
+
+component | explanation
+---------- | ------------
+statistic | the number of events (in the first sample if there are two.)
+parameter | the corresponding expected count
+p.value	| the p-value of the test.
+conf.int | a confidence interval for the rate or rate ratio.
+estimate | the estimated rate or rate ratio.
+null.value | the rate or rate ratio under the null, r.
+alternative | a character string describing the alternative hypothesis.
+method | the character string "Exact Poisson test" or "Comparison of Poisson rates" as appropriate.
+data.name | a character string giving the names of the data.
+
+## So using subsetting
+```{r}
+poisson.test (x = as.vector(hospital), r = 100)$p.value
+```
+
+## Wrap it up in a function
+``` {r, warning=TRUE}
+MyPois <- function (x, ...){
+  x <- as.vector(x)
+  poisson.test (x, r = 100)$p.value
+}
+# test it
+MyPois(hospitals[1,1])
+MyPois(hospitals[1,2])
+# MyPois(hospitals[2,1])
+```
+
+## Re-write the function
+``` {r}
+MyPois <- function (x, ...){
+  x <- as.vector(x)
+  if (is.na(x)) return (NA)
+  poisson.test (x, r = 100)$p.value 
+}
+# test it again
+MyPois(hospitals[1,1])
+MyPois(hospitals[1,2])
+MyPois(hospitals[2,1])
+```
+
+## Apply it to the dataset
+
+```{r} 
+hosp.p.values <- apply (hospitals, 1:2, MyPois)
+hosp.p.values
+```
+
+## Identify True/False for the test
+
+```{r}
+hosp.diff <- hosp.p.values < 0.05
+hosp.diff
+```
+
+## This has pulled together
+- Knowledge of
+    + object types
+    + indices and subsetting
+    + how functions work
+    
+## Function gotchas
+* Objects don't print unless you use `print` function
+* The last value is returned (by default)
+* Function may apply to a vector or a scalar
+* Changing object types cause problems
+* more advanced, might not work in a package
+
+

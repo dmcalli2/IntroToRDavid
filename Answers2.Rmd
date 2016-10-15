@@ -1,0 +1,244 @@
+---
+title: "Answers_new"
+author: "David McAllister"
+date: "11 May 2016"
+output: pdf_document
+---
+
+# Answers 2 Objects
+```{r}
+# Look at the following code, guess what kind of object this will create, then
+# check what is created using typeof, str() or class() 1.
+str(c(35, 46, 17, 58,2))
+# 2. 
+str(c( 34, 1, "l", TRUE))
+# 3. 
+str(c(T,F,T,F))
+# 4. 
+class(cbind (c(1,0,0), c(0,1,0), c(0,0,1)))
+# 5. 
+class(cbind (c("a", "b", "c"), c (1,2,3)))
+mode (cbind (c("a", "b", "c"), c (1,2,3)))
+# 6. 
+str(data.frame (var1 = 1:10, var2 = letters[1:10], var3 = rep(1:2,5), stringsAsFactors = FALSE ))
+```
+
+# Answers 3 Working with vectors
+```{r}
+set.seed (1234)
+# 1. Create a vector a of 10 realisations from the standard normal distribution, use rnorm (mean = 0, sd = 1)
+a <- rnorm (10, mean  = 0, sd = 1)
+# 2. Calculate max, min, greater than 1, less than 1
+max(a) ; min (a) ; sum(a >1) ; sum(a < 1)
+# 3.  Create a vector b from a standard normal distribution
+b <- rnorm (10, mean  = 0, sd = 1)
+# 4. Take the maximum of a and b for each element
+pmax (a, b); pmin (a,b)
+# 5. Identify the number of elements where a > b
+sum (a>b)
+# R created a logical vector of length = length (a) (and length b) where each
+# element of the new vector was TRUE if the corresponding element of a was
+# greater than the corresponding element of b. It then coerced the logical
+# vector to an integer vector and summed the values.
+```
+
+# Answers 4 Subsetting vectors
+```{r}
+set.seed (1234)
+# 1. Create a vector, x from a poisson distribution of length 10, with lambda = 5, use rpois
+x <- rpois (10, lambda = 5)
+x
+# 2. Select the first and last elements using an integer vector
+x[c(1L,10L )] # could have used a double vector, R would have coerced
+# 3. select all but the first element
+x[-1]
+# 4. Return the vector according to the numerical order
+sort (x)
+x[order(x)]
+# Order returns indices for the ordering. These can then be used to order any 
+# object (of the same length), such as another vector, a dataframe etc. sort is
+# only useful for that particular vector.
+
+# 5. Use logical subsetting to select all values of x which are >5
+x [x >5]
+# 6. In a single line, identify the minimum value of x which is greater than 3
+min (x[x>3])
+# Create the vector b
+b <- c(a = 1, b = 2, c = 3, d = 4, e = 5)
+b
+# 7. Return a vector from these elements repeating the first and second element
+# 3 times and twice respectively, using the names attribute of the vector
+b [c(rep("a",3), rep("b",2), "e")]
+# 8. Assign NA to all values of x >5
+x [x>5] <- NA
+x
+# 9. Add 0.5 to any values less than 5, HINT NEED TO USE is.na and "&" operator
+x [x<5 & is.na(x) == FALSE] <- x[x<5 & is.na(x) == FALSE] + 0.5
+```
+
+# Answers 5 Subsetting other objects
+1. Run the following and answer the following questions
+  + a list
+  + names and the class lm. The latter means that plot.lm, summary.lm will work on it
+  + 13 objects within a list
+  + you get a character vector of length 1222 
+2. Extract the coefficients for the model using the coef(model1) function and using indexing
+  + coef(model1)
+  + model1$coef
+3. Extract the Species factor from the model so you get an atomic vector which is a factor 
+  + `model1$model$Species` and `model1[["model"]][["species"]]` both give a vector (a factor).
+  + anything else will give you a list or nothing
+  + The following is an example of getting a list from a list
+```{r, eval = FALSE}
+b <- model1["model"] # this is a list of length 1 containing a dataframe
+b[[1]][,2] # this extacts the second column from the dataframe nested within a list
+```
+4. Turn the swiss dataset into a matrix `swiss.m <- as.matrix (swiss)`
+5. Select all first and third columns and second and fourth rows, use 2 methods
+```{r, echo = -1}
+swiss.m <- as.matrix (swiss)
+swiss.m [c(2,4), c(1,3)]
+swiss.m [c("Delemont", "Moutier"), c("Fertility",   "Examination")] 
+```
+6. Select a single row, first in a way which produces a vector then in a way which produces another matrix. What attributes persist with each method?
+```{r}
+swiss.m [1,,drop = TRUE] # column names
+swiss.m [1,,drop = FALSE] # dimensions, column names and rownames
+```
+7. Calculate the count, mean and sum of all the values are between 25 and 30 (inclusive)
+```{r}
+mean (swiss.m[swiss.m >=25 & swiss.m <=30]) # etc, or with less repetition
+quickfx <- function (x) c(length = length(x), mean = mean(x), sum = sum(x))
+quickfx(swiss.m[swiss.m >=25 & swiss.m <=30])
+# a proper R programmer might do this by storing the functions in a list
+# instead.
+```
+8. Select all the rows for towns with Rive in the names (use the grepl and rownames functions)
+```{r}
+swiss [grepl("Rive", rownames(swiss)), ]
+```
+9. remove all objects from workspace and create swiss as a matrix and a dataframe
+```{r}
+data(swiss)
+swiss.m <- as.matrix(swiss)
+swiss.df <- swiss
+```
+  + Use the following indexing, which gives same and different results
+    + [[1]] yields different results, treats as if `[` for matrix and `[[` for dataframe.
+
+# Answers 6 working with factors
+1. load in the esoph data , data (esoph) (not really necessary but in case modfied it) and look at the help file
+```{r, eval = 1}
+data (esoph)
+?esoph
+```
+
+2. what class is each of the variables
+```{r, eval = TRUE}
+lapply (esoph, class)
+```
+3. Repace alcohol consumption "120+" with "120 to 150"
+  + Using indexing with a logical test
+```{r}
+esoph$alcgp2 <- as.character(esoph$alcgp)
+esoph$alcgp2 [esoph$alcgp2 == "120+"] <- "120 to 150"
+```
+  + using ifelse
+```{r}
+a<- ifelse(esoph$alcgp == "120+", "120 to 150", esoph$alcgp)
+b<- ifelse(esoph$alcgp == "120+", "120 to 150", as.character(esoph$alcgp))
+table(a,b)
+```
+  + In the first case R treates the replacement vector as an integer. In the second we coerce it to character vector.
+4. Dichotomise alcohol consumption into >=80 or <80
+```{r}
+esoph$alc.dichot <- esoph$alcgp %in% c("80-119", "120+")
+table(esoph$alc.dichot, esoph$alcgp)
+```
+5. Run a regression model on:
+```{r, eval = FALSE}
+model1 <- glm(cbind(ncases, ncontrols) ~ tobgp, data = esoph, family = binomial())
+model1 <- glm(cbind(ncases, ncontrols) ~ factor(tobgp, ordered = FALSE), data = esoph, family = binomial())
+```
+  + what has R done differently?
+    + Default glm behaviour with an ordered factor is to fit it as a linear, quadratic and cubic term
+    + Default glm behaviour with an unordered factor is to create indicator variables in the design matrix
+
+
+# Answers 7 Using functions
+1. For c, summary, mean, glm, plot examine the help menus
+
+![alt text](figures/answertable.png)
+
+  + If you see a function is generic in the help menu, look at the function which creates the object of that class instead, eg `?glm` to see how glm plotted, not `?plot`. If you do so you find out it has classes "glm" and "lm". `?plot.lm` tells you about how it wil be plotted. There are often links to the generic functions in the creating function, eg `anova.glm` is on the glm page.
+  + Sometimes the specific functions are hidden from the user and you can't search using `?`. This is because they are designed to work behind the scenes without users having to know the specific name.
+6. What will R do if a function argument is not supplied and there is no default?
+Nothing, unless it needs the argument for it's calculations
+```{r, eval = FALSE}
+myfx <- function (x,y,z) {x + y}
+myfx (1,2)
+myfx2 <- function (x,y,z) {x + y + z}
+myfx2(1,2) # gives an error
+```
+3. What values will `print (c(a = a, b = b))` result in. Guess before running.
+```{r, eval = TRUE}
+a <- 1
+b <- 4
+MyFunction <- function (a, b) {
+  a <- a + 1
+  b <<- b + 1
+}
+MyFunction (a = 2, b = 6)
+print (c(a = a, b = b))
+```
+
+# Answers 8 apply family
+```{r, warning = TRUE}
+# 1. In the iris dataset use tapply to calculate the mean Sepal length according to Species 
+tapply(iris$Sepal.Length, iris$Species, mean)
+# 2. Use lapply to determine the class of each variable and then the mean of each variable. How does the R function lapply handle the character vector?
+lapply (iris, class)
+lapply (iris, mean)
+mean(iris$Species)
+# R returns an NA for the character vector 3. For the double vectors, use apply
+# to calculate row sums and column sums and compare the results with rowSums and
+# colSums
+iris <- iris[, sapply(iris, is.numeric) ]
+## Note could have subsetted using names(iris) != "Species"
+#apply (iris, 1, sum)
+#apply (iris, 2, sum)
+#rowSums (iris)
+#colSums (iris)
+```
+
+# Answers 9 writing functions
+1. Look at the esoph dataset type ?esoph into R
+2. Summarise the total number of cases and controls by age group
+```{r}
+tapply (esoph$ncases + esoph$ncontrols, esoph$agegp, sum)
+```
+3.  Create a variable where the value is true for heavy smokers, defined as >19 gm per day of tobacco
+```{r}
+esoph$heavy.smoker <- esoph$tobgp %in% c("20-29", "30+")
+```
+4. Check that there are heavy smokers in each age group
+```{r}
+tapply (esoph$ncases + esoph$ncontrols, list( esoph$heavy.smoker, esoph$agegp), sum)
+```
+5. Run a logistic regression model of oesophageal cancer on heavy smoking for the whole dataset (have a look at the bottom of the ?esoph page for how to do this with aggregated data)
+```{r}
+model1 <- glm (cbind(ncases, ncontrols) ~ heavy.smoker, data = esoph, family = binomial)
+```
+6. Write a function which will extract the odds ratio for smoking > 19gm per day for each age group stratum.
+```{r}
+ExtractOR <- function (x) {
+  model1 <- glm (cbind(ncases, ncontrols) ~ heavy.smoker, data = x, family = binomial)
+  model1$coef["heavy.smokerTRUE"]
+}
+ExtractOR(esoph [ esoph$agegp == "35-44", ])
+by (esoph, esoph$agegp, ExtractOR)
+```
+7. Why couldn't we use `tapply`? look at the help for the first argument in `tapply` and `by`
+  + tapply only takes a single atomic vector and we needed to work with three vectors.
+8. What kind of object does `by` produce?
+  + it depends. This is one of the reasons many people prefer plyr or dplyr.

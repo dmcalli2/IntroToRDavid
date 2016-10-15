@@ -1,0 +1,51 @@
+---
+title: "Lecture 12 coding styles, gotchas etc"
+author: "David McAllister"
+date: "Tuesday, August 5th, 2014"
+output: ioslides_presentation
+---
+
+## Objectives
+
+- consider coding style as an issue
+- discuss some gotchas
+- talk about the help menu
+
+## Coding style
+
+- Write ugly difficult to understand code
+- More difficult to do that in some languages such as python
+- Read and be happy with a style
+- https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml
+
+## Gotchas
+- Missing values
+- Dropping down to a different object type
+- Forgetting quotes
+- writing row/column numbers inadvertantly
+- factors
+- thinking a character vector is a double or integer vector
+
+
+## Help menu, what it is
+- Some help pages teach statistics and use of software
+- R uses technical language and discusses software only
+- Dense, but concise
+- Vignettes and published papers
+- Much help elsewhere quickR, stackoverflow, google (tricks)
+![alt text](figures/rbooks2.png)
+
+## Help menu, example 
+glm is used to fit generalized linear models, specified by giving a symbolic description of the linear predictor and a description of the error distribution.
+
+```{r, eval=FALSE}
+## Dobson (1990) Page 93: Randomized Controlled Trial :
+counts <- c(18,17,15,20,10,20,25,13,12)
+outcome <- gl(3,1,9)
+treatment <- gl(3,3)
+print(d.AD <- data.frame(treatment, outcome, counts))
+glm.D93 <- glm(counts ~ outcome + treatment, family = poisson())
+anova(glm.D93); summary(glm.D93)
+```
+Look at examples, default arguments, values
+

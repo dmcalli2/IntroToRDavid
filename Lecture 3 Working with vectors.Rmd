@@ -1,0 +1,112 @@
+---
+title: 'Lecture 3: Working with vectors'
+author: "David McAllister"
+date: "Monday, June 30, 2014"
+output: ioslides_presentation
+---
+# Working in R is mainly about working with vectors
+
+## Objective of section
+* To be able to create and manipulate atomic vectors
+* To describe what vectorisation means (a term used often in help menu)
+
+## Mathematical operations
+```{r}
+a <- 1:10
+b <- seq(100,1000,100)
+a*b
+a+b
+a-b^a
+```
+
+## Simple functions
+```{r}
+max(a,b)
+min(a,b)
+pmax(a,b)
+pmin (a,b)
+```
+
+## Logical operations
+```{r, eval = 1:3, echo = -3}
+a <- rpois (6, lambda = 5)
+b <- rpois (6, lambda = 5)
+data.frame (a = a, b = b, "'a>b'" = a>b, "'a==b'" = a==b, "'a-b > 0'" = (a-b) >0, "'a < median(b)'" = a < median(b), check.names = FALSE)
+a > b
+a == b
+(a-b) > 0
+a < median(b)
+```
+
+## Operations with characters
+```{r}
+fruits <- c("oranges", "apples", "bananas", "tomatoes", "grapes")
+print (fruits)
+sub (pattern = "o", replacement = "O", x = fruits)
+toupper (fruits)
+tolower(fruits)
+```
+
+
+## Quick look at help file
+? max
+
+**Value**:
+
+>For min or max, a length-one vector. For pmin or pmax, a vector of length the longest of the input vectors, or length zero if >one of the inputs had zero length.
+>The type of the result will be that of the highest of the inputs in the hierarchy integer < double < character.
+>For min and max if there are only numeric inputs and all are empty (after possible removal of NAs), the result is double (Inf or-Inf).
+
+## Coercion happens inside functions
+Just like c() combining
+
+* Most mathematical functions (`+`, `log`, `abs`, etc.) > double or integer
+* logical operations (`==`, `&`, `|`, `any`, etc) > logical
+* Most string operations > character
+* explicitly coerce
+    + as.character()
+    + as.double()
+    + as.integer()
+    + as.logical()
+
+
+## Vector recycling
+```{r, warning = TRUE}
+# create three vectors of different lengths
+vect1 <- 1:10
+vect2 <- 1:2
+vect3 <- 1:3
+# Multiply vectors
+vect1 * vect2
+vect1 * vect3
+```
+
+## Complex functions also work with vectors
+```{r, eval = FALSE}
+model1 <- lm (y ~ x, data = mydata)
+## Is equivalent to
+model1 <- lm (mydata$y ~ mydata$x) # subsetting, we get onto next
+```
+R often talks about wrappers and non-standard evaluation
+
+* minimise typing for interactive analysis
+* harder to follow what's going on
+
+## Vectorisation
+```{r, echo = -(1:2)}
+(a <- c(1,2,3,4))
+(b <- c(10,20,30,40))
+new.value <- vector (length = 4L)
+for (i in 1:4) {
+  new.value[i] <- a[i] + b[i]
+}
+new.value
+# R handles this for you
+a^b + b^(a*b)
+```
+
+## Vectorisation
+Think about it when
+
+* applying non-vectorised function, eg `if`
+* making own functions

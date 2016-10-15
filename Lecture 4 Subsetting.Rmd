@@ -1,0 +1,140 @@
+---
+title: 'Lecture 4: Subsetting vectors'
+author: "David McAllister"
+date: "Tuesday, August 5th, 2014"
+output: ioslides_presentation
+---
+
+## Objective of section
+* To be able to use different type of indexing ([, [[ and $)
+* To be able to use integer, negative integer and logical values within these
+
+## Much of the following is taken from
+Advanced R by Hadley Wickham
+"http://adv-r.had.co.nz/"
+
+## The little operator that could `[` 
+R does all of this
+
+* Filtering
+
+* Deleting
+
+* Changing values
+
+* Merging
+
+## Why subsetting is hard
+
+* three subsetting operators, [, [[ and $
+
+* four types of subsetting, +ve integer, -ve integer, logical and character
+
+* Different for different objects (e.g. vectors,lists, factors, matrices and data frames)
+
+* The dreaded drop, subsetting changes object types
+
+## Atomic vectors
+
+```{r}
+x <- c(2.1, 4.2, 3.3, 5.4)
+```
+
+The number after the decimal point gives the original position in the vector.
+
+## __Positive integers__ return elements at the specified positions:
+
+```{r}
+x[c(3, 1)]
+x[order(x)]
+
+# Duplicated indices yield duplicated values
+x[c(1, 1)]
+
+# Real numbers are silently truncated to integers
+x[c(2.1, 2.9)]
+```
+
+## __Negative integers__ omit elements at the specified positions:
+
+```{r}
+x[-c(3, 1)]
+```
+
+    You can't mix positive and negative integers in a single subset:
+
+```{r, error = TRUE}
+x[c(-1, 2)]
+```
+
+## __Logical vectors__ 
+select elements where the corresponding logical value is `TRUE`
+Most useful type of subsetting
+
+```{r}
+x[c(TRUE, TRUE, FALSE, FALSE)]
+x > 3
+x[x > 3]
+```
+
+## Logical versus integer vectors
+For logical vector, length of indexing vector = length of vector
+
+```{r}
+x[c(TRUE, FALSE)]
+# Equivalent to
+x[c(TRUE, FALSE, TRUE, FALSE)]
+```
+
+## Missing indexing
+Missing value in indexing vector yields missing value in output
+
+```{r}
+x[c(TRUE, TRUE, NA, FALSE)]
+```
+
+## __Nothing__ returns the original vector.
+
+```{r}
+x[]
+```
+
+
+## __Character vectors__ 
+Used to return elements with matching names.
+```{r}
+(y <- setNames(x, letters[1:4]))
+y[c("d", "c", "a")]
+
+# Like integer indices, you can repeat indices
+y[c("a", "a", "a")]
+
+# When subsetting with [ names are always matched exactly
+z <- c(abc = 1, def = 2)
+z[c("a", "d")]
+```
+
+# Assigning
+
+## Typical data cleaning exercise
+
+```{r, echo = c(-1,-2,-3, -10)}
+x <- round(rnorm(10, mean = 120, sd = 20), 0)
+x[c(1,4,8)] <- -99
+x
+# Integer subsetting with assignment
+x[1] <- NA
+# Logical subsetting with assignment
+x[x == -99] <- NA
+x
+```
+
+## Typical data modifying exercise
+```{r, echo = -5}
+# More complex logical subsetting with assignment
+sex <- rep(c("Male", "Female"), each = 5) 
+x.mod <- x
+x.mod [sex == "Male"] <- x.mod[sex == "Male"] * 1.2
+data.frame (sex = sex, x = x, x.mod = x.mod)
+```
+
