@@ -1,8 +1,9 @@
 ---
-title: "Lecture 12 coding styles, gotchas etc"
+title: "Lecture 11 coding styles, gotchas etc"
 author: "David McAllister"
-date: "Tuesday, August 5th, 2014"
-output: ioslides_presentation
+date: "31st October 2016"
+output:
+  slidy_presentation: default
 ---
 
 ## Objectives

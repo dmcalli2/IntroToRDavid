@@ -1,14 +1,15 @@
 ---
 title: 'Lecture 2: Objects'
 author: "David McAllister"
-date: "Monday, June 30, 2014"
-output: ioslides_presentation
+date: "Monday 31st October, 2016"
+output:
+  ioslides_presentation: default
 ---
 
 ## Objective of session
 
-* Describe the differen't types of R objects
-* Describe how R coerces differnt types of atomic vectors
+* Describe the different types of R objects
+* Describe how R coerces different types of atomic vectors
 
 
 ## Much of the following is taken from
@@ -46,8 +47,8 @@ c(1, 2, 4.1, "missing")
 
 c(TRUE, FALSE, 1)
 ```
-When try to combine differnt't types changes vector type
-* runs down the hill
+When try to combine different types changes vector type
+**runs down the hill**
   
 ## Lists versus vectors
 ``` {r}
@@ -67,7 +68,7 @@ str(list3)
 ```
 
 ## Matrices
-2d extention of vectors
+2d extension of vectors
 ```{r}
 mymatrix <- matrix (1:25, nrow = 5)
 print (mymatrix)
@@ -103,9 +104,8 @@ matrix (1:4, nrow = 2, dimnames = list(c("one", "two"), c("A", "B")))
 names(iris)
 ```
 
-## Objects have default methods
+## Same function, different action
 
-* Determined by class, allows OOP style
 ```{r, echo = -3}
 a_vector <- rep(1:5, 2)
 a_matrix <- matrix (a_vector, nrow = 5)

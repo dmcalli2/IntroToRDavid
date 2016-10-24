@@ -1,8 +1,9 @@
 ---
 title: 'Lecture 5: Subsetting other objects'
 author: "David McAllister"
-date: "Monday, June 30, 2014"
-output: ioslides_presentation
+date: "Monday 31st October, 2016"
+output:
+  ioslides_presentation: default
 ---
 
 ## Objective of section
@@ -36,7 +37,7 @@ unlist (bigworm)
 outside.list <- list (inside.list1 = list (vector1 = 1:20,
                                            vector2 = letters[1:10]),
                       inside.list2 = list (7,8,9))
-str(inside.list1) # R can't see it
+# str(inside.list1) # R can't see it
 str(outside.list)
 ```
 

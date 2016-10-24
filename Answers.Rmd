@@ -1,7 +1,7 @@
 ---
 title: "Answers_new"
 author: "David McAllister"
-date: "11 May 2016"
+date: "October 2016"
 output: pdf_document
 ---
 
@@ -28,8 +28,8 @@ str(data.frame (var1 = 1:10, var2 = letters[1:10], var3 = rep(1:2,5), stringsAsF
 set.seed (1234)
 # 1. Create a vector a of 10 realisations from the standard normal distribution, use rnorm (mean = 0, sd = 1)
 a <- rnorm (10, mean  = 0, sd = 1)
-# 2. Calculate max, min, greater than 1, less than 1
-max(a) ; min (a) ; sum(a >1) ; sum(a < 1)
+# 2. Calculate max and min
+max(a) ; min (a) 
 # 3.  Create a vector b from a standard normal distribution
 b <- rnorm (10, mean  = 0, sd = 1)
 # 4. Take the maximum of a and b for each element
@@ -96,22 +96,21 @@ b[[1]][,2] # this extacts the second column from the dataframe nested within a l
 4. Turn the swiss dataset into a matrix `swiss.m <- as.matrix (swiss)`
 5. Select all first and third columns and second and fourth rows, use 2 methods
 ```{r, echo = -1}
-swiss.m <- as.matrix (swiss)
-swiss.m [c(2,4), c(1,3)]
-swiss.m [c("Delemont", "Moutier"), c("Fertility",   "Examination")] 
+swiss_m <- as.matrix (swiss)
+swiss_m [c(2,4), c(1,3)]
+swiss_m [c("Delemont", "Moutier"), c("Fertility",   "Examination")] 
 ```
 6. Select a single row, first in a way which produces a vector then in a way which produces another matrix. What attributes persist with each method?
 ```{r}
-swiss.m [1,,drop = TRUE] # column names
-swiss.m [1,,drop = FALSE] # dimensions, column names and rownames
+swiss_m [1,,drop = TRUE] # column names
+swiss_m [1,,drop = FALSE] # dimensions, column names and rownames
 ```
 7. Calculate the count, mean and sum of all the values are between 25 and 30 (inclusive)
 ```{r}
-mean (swiss.m[swiss.m >=25 & swiss.m <=30]) # etc, or with less repetition
+mean (swiss_m[swiss_m >=25 & swiss_m <=30]) # etc, or with less repetition
 quickfx <- function (x) c(length = length(x), mean = mean(x), sum = sum(x))
-quickfx(swiss.m[swiss.m >=25 & swiss.m <=30])
-# a proper R programmer might do this by storing the functions in a list
-# instead.
+quickfx(swiss_m[swiss_m >=25 & swiss_m <=30])
+# Later on we will see how we can pass a list of functions.
 ```
 8. Select all the rows for towns with Rive in the names (use the grepl and rownames functions)
 ```{r}
@@ -120,11 +119,12 @@ swiss [grepl("Rive", rownames(swiss)), ]
 9. remove all objects from workspace and create swiss as a matrix and a dataframe
 ```{r}
 data(swiss)
-swiss.m <- as.matrix(swiss)
-swiss.df <- swiss
+swiss_m <- as.matrix(swiss)
+swiss_df <- swiss
 ```
   + Use the following indexing, which gives same and different results
-    + [[1]] yields different results, treats as if `[` for matrix and `[[` for dataframe.
+    + [[1]] yields different results, matrix - first element of vector, df - double atomic vector
+    + [1] yields different results, matrix - first element of vector, df - one column dataframe
 
 # Answers 6 working with factors
 1. load in the esoph data , data (esoph) (not really necessary but in case modfied it) and look at the help file
@@ -152,26 +152,25 @@ table(a,b)
   + In the first case R treates the replacement vector as an integer. In the second we coerce it to character vector.
 4. Dichotomise alcohol consumption into >=80 or <80
 ```{r}
-esoph$alc.dichot <- esoph$alcgp %in% c("80-119", "120+")
-table(esoph$alc.dichot, esoph$alcgp)
+esoph$alc_dichot <- esoph$alcgp %in% c("80-119", "120+")
+table(esoph$alc_dichot, esoph$alcgp)
 ```
 5. Run a regression model on:
 ```{r, eval = FALSE}
 model1 <- glm(cbind(ncases, ncontrols) ~ tobgp, data = esoph, family = binomial())
-model1 <- glm(cbind(ncases, ncontrols) ~ factor(tobgp, ordered = FALSE), data = esoph, family = binomial())
+model2 <- glm(cbind(ncases, ncontrols) ~ factor(tobgp, ordered = FALSE), data = esoph, family = binomial())
 ```
   + what has R done differently?
     + Default glm behaviour with an ordered factor is to fit it as a linear, quadratic and cubic term
     + Default glm behaviour with an unordered factor is to create indicator variables in the design matrix
 
 
-# Answers 7 Using functions
+# Answers 7 Understanding functions
 1. For c, summary, mean, glm, plot examine the help menus
 
 ![alt text](figures/answertable.png)
 
-  + If you see a function is generic in the help menu, look at the function which creates the object of that class instead, eg `?glm` to see how glm plotted, not `?plot`. If you do so you find out it has classes "glm" and "lm". `?plot.lm` tells you about how it wil be plotted. There are often links to the generic functions in the creating function, eg `anova.glm` is on the glm page.
-  + Sometimes the specific functions are hidden from the user and you can't search using `?`. This is because they are designed to work behind the scenes without users having to know the specific name.
+  + If you see a function is generic in the help menu, you can use methods() to access it. eg methods(generic.function = "plot"). You can also search to see which generic functions exist for a class, eg methods(class = "glm"). See ?methods for accessing help and the function's source codes.
 6. What will R do if a function argument is not supplied and there is no default?
 Nothing, unless it needs the argument for it's calculations
 ```{r, eval = FALSE}
@@ -200,15 +199,16 @@ tapply(iris$Sepal.Length, iris$Species, mean)
 lapply (iris, class)
 lapply (iris, mean)
 mean(iris$Species)
-# R returns an NA for the character vector 3. For the double vectors, use apply
+# R returns an NA for the character vector 
+#3. For the double vectors, use apply
 # to calculate row sums and column sums and compare the results with rowSums and
 # colSums
 iris <- iris[, sapply(iris, is.numeric) ]
 ## Note could have subsetted using names(iris) != "Species"
-#apply (iris, 1, sum)
-#apply (iris, 2, sum)
-#rowSums (iris)
-#colSums (iris)
+#apply (iris, 1, sum) # commented out as length = 150
+apply (iris, 2, sum)
+#rowSums (iris) # commented out as length = 150
+colSums (iris)
 ```
 
 # Answers 9 writing functions
@@ -219,21 +219,21 @@ tapply (esoph$ncases + esoph$ncontrols, esoph$agegp, sum)
 ```
 3.  Create a variable where the value is true for heavy smokers, defined as >19 gm per day of tobacco
 ```{r}
-esoph$heavy.smoker <- esoph$tobgp %in% c("20-29", "30+")
+esoph$heavy_smoker <- esoph$tobgp %in% c("20-29", "30+")
 ```
 4. Check that there are heavy smokers in each age group
 ```{r}
-tapply (esoph$ncases + esoph$ncontrols, list( esoph$heavy.smoker, esoph$agegp), sum)
+tapply (esoph$ncases + esoph$ncontrols, list( esoph$heavy_smoker, esoph$agegp), sum)
 ```
 5. Run a logistic regression model of oesophageal cancer on heavy smoking for the whole dataset (have a look at the bottom of the ?esoph page for how to do this with aggregated data)
 ```{r}
-model1 <- glm (cbind(ncases, ncontrols) ~ heavy.smoker, data = esoph, family = binomial)
+model1 <- glm (cbind(ncases, ncontrols) ~ heavy_smoker, data = esoph, family = binomial)
 ```
 6. Write a function which will extract the odds ratio for smoking > 19gm per day for each age group stratum.
 ```{r}
 ExtractOR <- function (x) {
-  model1 <- glm (cbind(ncases, ncontrols) ~ heavy.smoker, data = x, family = binomial)
-  model1$coef["heavy.smokerTRUE"]
+  model1 <- glm (cbind(ncases, ncontrols) ~ heavy_smoker, data = x, family = binomial)
+  model1$coef["heavy_smokerTRUE"]
 }
 ExtractOR(esoph [ esoph$agegp == "35-44", ])
 by (esoph, esoph$agegp, ExtractOR)

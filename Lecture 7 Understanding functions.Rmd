@@ -1,8 +1,9 @@
 ---
 title: "Lecture 7 Understanding functions"
-author: David A McAllister
-date: 6th August 2014
-output: ioslides_presentation
+author: "David A McAllister"
+date: "Monday 31st October, 2016"
+output:
+  slidy_presentation: default
 ---
 
 ## Objective of section
@@ -14,7 +15,9 @@ output: ioslides_presentation
 
 # See Hadley Wickham again
 
-## Everything that exists is an object. Everything that happens is a function call
+## 
+### Everything that exists is an object. 
+### Everything that happens is a function call
 ### John Chambers
 
 ## Function components

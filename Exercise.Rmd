@@ -2,10 +2,12 @@
 title: "Exercises"
 author: "Background to R"
 date: "October 31st 2016"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
-# Exercise 1 no exercises lecture 1
+# Lecture 1, no exercises.
 
 # Exercise 2 Objects
 Look at the following code, guess what kind of object this will create, then check what is created using typeof, str() or class()
@@ -21,8 +23,8 @@ Look at the following code, guess what kind of object this will create, then che
 type set.seed (1234) and hit return
 This is so we all get the same answer
 
-1. Create a vector a of 10 realisations from the standard normal distribution, use rnorm (10, mean = 0, sd = 1)
-2. Calculate max, min, sum of values greater than 1, sum of values less than 1
+1. Create a vector **a** of 10 realisations from the standard normal distribution, use rnorm (10, mean = 0, sd = 1)
+2. Calculate max and min
 3. Create a vector b from a standard normal distribution
 4. Take the maximum of a and b for each element
 5. Identify the number of elements where a > b. What did R do when you ran this?
@@ -70,8 +72,8 @@ length(unlist(model1))
 
 ```{r}
 data(swiss)
-swiss.m <- as.matrix(swiss)
-swiss.df <- swiss
+swiss_m <- as.matrix(swiss)
+swiss_df <- swiss
 ```
   + [1]
   + [[1]]
@@ -100,7 +102,7 @@ model2 <- glm(cbind(ncases, ncontrols) ~ factor(tobgp, ordered = FALSE), data = 
 ```
 what has R done differently?
 
-# Exercise 7 Using functions
+# Exercise 7 Understanding functions
 1. Don't write this down, just look at the menu and get a feel. For c, summary, mean, glm, and plot
   + Is it a generic, primitive, S3 or S4 function
   + What type of object does the first argument accept

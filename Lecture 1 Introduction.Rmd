@@ -1,64 +1,28 @@
 ---
 title: "Background to R"
 author: "David McAllister"
-date: "Tuesday, August 05, 2014"
+date: "Monday 31st October, 2016"
 output:
   ioslides_presentation: default
-  beamer_presentation: default
 ---
 
 ## Aims and objectives
 The aim of this course is to have a better feel for how R works as a language. At the end of this course you should be able to
 
 * Clean and transform data in R
-* describe how R's object work
+* describe how R's objects work
 * Understand from the help menu how functions in base R and the packages work
 * Use the apply family of functions
 * Write simple functions
 
 ## Overview
+Lectures followed by practicals
 
-```{r, echo = FALSE}
-day1 <- read.delim(file = "schedule_day1.txt")
-knitr::kable(day1)
-```
+### Day 1
+R Objects, subsetting, assigning
 
- Time | Topic
-------|------ 
-0930 to 0945| Introduction
-0945 to 1045| Objects
-1045 to 1100| Coffee
-1100 to 1200| Subsetting
-1200 to 1300| Lunch
-1300 to 1430| Functions (and factors)
-1430 to 1445| Coffee
-1445 to 1700| Coding style, gotchas, R Help, other Rs
-
-
-## Morning in detail
- Time | Topic
-------|------ 
-0930 to 0945 |Introduction
-0945 to 1015 |Objects
-1015 to 1045 |working with vectors
-1045 to 1100 | **Coffee**
-1100 to 1130 |Subsetting vectors
-1130 to 1200 |Subsetting lists
-1200 to 1300 | **Lunch (not provided)**
-
-
-## Afternoon in detail
-
- Time | Topic
-------|------ 
-1300 to 1330 |Factors and other attributes
-1330 to 1400 |Understanding functions
-1400 to 1430 |Apply family of functions
-1430 to 1445 | **Coffee**
-1445 to 1515 |Writing functions
-1515 to 1545 |Plyr and reshape2
-1545 to 1615 |ggplot2 and other interlopers
-1615 to 1700 |Coding style and help menu 
+### Day 2
+Attributes, functions, apply family of functions
 
 ## The S programming language
 

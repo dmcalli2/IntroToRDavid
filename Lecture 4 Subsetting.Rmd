@@ -1,12 +1,13 @@
 ---
 title: 'Lecture 4: Subsetting vectors'
 author: "David McAllister"
-date: "Tuesday, August 5th, 2014"
-output: ioslides_presentation
+date: "Monday 31st October, 2016"
+output:
+  ioslides_presentation: default
 ---
 
 ## Objective of section
-* To be able to use different type of indexing ([, [[ and $)
+* To be able to use different types of indexing ([, [[ and $)
 * To be able to use integer, negative integer and logical values within these
 
 ## Much of the following is taken from
@@ -82,7 +83,7 @@ For logical vector, length of indexing vector = length of vector
 
 ```{r}
 x[c(TRUE, FALSE)]
-# Equivalent to
+# Equivalent to due to vector recycling
 x[c(TRUE, FALSE, TRUE, FALSE)]
 ```
 
@@ -133,8 +134,8 @@ x
 ```{r, echo = -5}
 # More complex logical subsetting with assignment
 sex <- rep(c("Male", "Female"), each = 5) 
-x.mod <- x
-x.mod [sex == "Male"] <- x.mod[sex == "Male"] * 1.2
-data.frame (sex = sex, x = x, x.mod = x.mod)
+x_mod <- x
+x_mod [sex == "Male"] <- x_mod[sex == "Male"] * 1.2
+data.frame (sex = sex, x = x, x_mod = x_mod)
 ```
 

@@ -1,16 +1,16 @@
 ---
 title: "Lecture 8 Applying functions"
 author: David A McAllister
-date: 5th August 2014
-output: ioslides_presentation
+date: "Monday 31st October, 2016"
+output:
+  slidy_presentation: default
 ---
 
 ## Objective of section
 * To understand how apply functions work
 * To use apply functions to avoid repetition
 
-# "Don't repeat yourself"
-### Andy Hunt and Dave Thomas
+# "Don't repeat yourself" - Andy Hunt and Dave Thomas
 
 ## Use apply family of functions to avoid looping
 
@@ -18,7 +18,7 @@ output: ioslides_presentation
 * sapply - a wrapper for lapply which simplifies the output as much as possible
 * tapply - apply to a dataframe (generally) split by a factor
 * apply - apply across rows and/or columns of a matrix-like object
-* others like by, aggregate etc, but I don't use because I prefer plyr. However, we will use `by` in the next but one exercise
+* others like by, aggregate etc, but I don't use because I prefer dplyr. However, we will use `by` in the next but one exercise
 
 ## Why 
 * Makes code more readable
@@ -46,7 +46,9 @@ lapply (cars.missing, mean, na.rm = TRUE)
 ## If used with [] can replace values in dataframe
 ```{r}
 MakeNAFunction <- function (x, cutpoint = 0.1, ...) {
-  ifelse (x<quantile(x,cutpoint), NA, x)}
+  ifelse (x<quantile(x,cutpoint), NA, x)
+}
+
 cars [] <- lapply (cars, MakeNAFunction, 0.05)
 cars[1:4,]
 data(cars)

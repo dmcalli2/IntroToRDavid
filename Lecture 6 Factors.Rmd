@@ -1,8 +1,10 @@
 ---
 title: "Lecture 6 Factors"
-author: David A McAllister
-date: 6th August 2014
-output: ioslides_presentation
+author: "David A McAllister"
+date: "Monday 31st October, 2016"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
 ---
 
 ## Objective of section
@@ -25,30 +27,24 @@ output: ioslides_presentation
 ## Create factor
 All factors are created from character vectors
 ```{r, echo = FALSE}
-my.char <- sample(c("a", "b","c","e"), 20, replace = TRUE)
-my.char
+my_char <- sample(c("a", "b","c","e"), 20, replace = TRUE)
+my_char
 ```
 * Values include a,b,c and e
 * Assume "d" was possible (just not in this dataset yet)
 ```{r}
-my.factor <- factor(my.char, levels =c("a","b","c","d","e"), 
+my_factor <- factor(my_char, levels =c("a","b","c","d","e"), 
                     labels = c("A","B","C","D","E"))
-str(my.factor)
+str(my_factor)
 ```
-Alternatively
 
-* Could have just used defaults
-```{r}
-my.factor.other <- factor (my.char)
-levels (my.factor.other)
-```
 
 ## What happens
 R-help "If x[i] equals levels[j], then the i-th element of the result is j."
 
 ```{r}
-data.frame (original = my.char, levels = as.numeric (my.factor), 
-            labels = as.character(my.factor))
+data.frame (original = my_char, levels = as.numeric (my_factor), 
+            labels = as.character(my_factor))
 ```
 
 ## Modifying factors
@@ -56,11 +52,11 @@ data.frame (original = my.char, levels = as.numeric (my.factor),
 
 ```{r, eval =TRUE, warning = TRUE}
 # Can't add new values
-my.factor [3] <- "F" 
+my_factor [3] <- "F" 
 # Even if originally present when made factor
-my.factor [3] <- "d"
+my_factor [3] <- "d"
 # Only existing levels
-my.factor [3] <- "D"
+my_factor [3] <- "D"
 ```
 
 ## Create a new factor with different coding
@@ -70,9 +66,9 @@ New metadata
 * No donkeys
 ```{r}
 # create new factor
-my.factor2 <- factor (my.char, levels = c("e", "b", "a", "c"), 
+my_factor2 <- factor (my_char, levels = c("e", "b", "a", "c"), 
                       labels = paste ("new", c("E", "B","A","C")))
-levels (my.factor2)
+levels (my_factor2)
 ```
 
 ## Concatenating factors
@@ -81,8 +77,8 @@ In order to combine factors
 * Must convert to character variables first
 
 ```{r}
-naive <- c(my.factor, my.factor2)
-correct <- c(as.character(my.factor), as.character(my.factor2))
+naive <- c(my_factor, my_factor2)
+correct <- c(as.character(my_factor), as.character(my_factor2))
 #Tabulate - shows the problem
 table(naive, correct)
 ```
@@ -92,35 +88,35 @@ Reference level
 
 * Safe and easy, eg in regression modelling
 ```{r, echo = 2}
-levels (my.factor)
-my.factor <- relevel (my.factor, "C")
-levels(my.factor)
+levels (my_factor)
+my_factor <- relevel (my_factor, "C")
+levels(my_factor)
 ```
 
 ## Collapsing
 
 * but potentially dangerous
 ```{r, echo= 2}
-my.vowels <- my.factor
-levels (my.vowels) <- c("con", "vow", "con", "con", "vow")
-table (my.vowels, my.factor)
-as.numeric (my.factor) [1:10]
-as.numeric (my.vowels) [1:10]
+my_vowels <- my_factor
+levels (my_vowels) <- c("con", "vow", "con", "con", "vow")
+table (my_vowels, my_factor)
+as.numeric (my_factor) [1:10]
+as.numeric (my_vowels) [1:10]
 ```
 *Safest option is to use factor* levels and labels in same function
 
 ## Dropping levels
 ```{r}
-my.factor <- factor (my.char)
-table (my.factor)
-table(my.factor[my.factor != "c"])
-table(my.factor[my.factor != "c", drop = TRUE])
+my_factor <- factor (my_char)
+table (my_factor)
+table(my_factor[my_factor != "c"])
+table(droplevels(my_factor[my_factor != "c"]))
 ```
 
 ## A factor is a numerical integer with an attribute
 
 ```{r}
-attributes (my.factor)
+attributes (my_factor)
 attributes (matrix(1:9, nrow = 3))
 
 ```

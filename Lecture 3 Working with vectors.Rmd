@@ -1,14 +1,16 @@
 ---
 title: 'Lecture 3: Working with vectors'
 author: "David McAllister"
-date: "Monday, June 30, 2014"
-output: ioslides_presentation
+date: "Monday 31st October, 2016"
+output:
+  ioslides_presentation: default
 ---
+
 # Working in R is mainly about working with vectors
 
 ## Objective of section
 * To be able to create and manipulate atomic vectors
-* To describe what vectorisation means (a term used often in help menu)
+* To describe what coercion means (a term used often in help menu)
 
 ## Mathematical operations
 ```{r}

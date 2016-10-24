@@ -1,8 +1,9 @@
 ---
-title: "Lecture 11 ggplot2 and other interlopers"
+title: "Lecture 10 ggplot2 and other interlopers"
 author: "David McAllister"
-date: "Tuesday, August 5th, 2014"
-output: ioslides_presentation
+date: "31st October 2016"
+output:
+  slidy_presentation: default
 ---
 
 ## Objectives of session
@@ -52,7 +53,7 @@ plot1
 
 ## Why is it an interloper
 - Funny use of +
-- completely seperate to base R graphics
+- completely separate to base R graphics
 - No generic functions
   + if want to use it, understand lists and extract what you want
 - Very nice striking graphics
