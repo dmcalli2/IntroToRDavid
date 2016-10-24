@@ -3,8 +3,8 @@ title: "Background to R"
 author: "David McAllister"
 date: "Tuesday, August 05, 2014"
 output:
-  beamer_presentation: default
   ioslides_presentation: default
+  beamer_presentation: default
 ---
 
 ## Aims and objectives
@@ -18,6 +18,11 @@ The aim of this course is to have a better feel for how R works as a language. A
 
 ## Overview
 
+```{r, echo = FALSE}
+day1 <- read.delim(file = "schedule_day1.txt")
+knitr::kable(day1)
+```
+
  Time | Topic
 ------|------ 
 0930 to 0945| Introduction
@@ -28,6 +33,7 @@ The aim of this course is to have a better feel for how R works as a language. A
 1300 to 1430| Functions (and factors)
 1430 to 1445| Coffee
 1445 to 1700| Coding style, gotchas, R Help, other Rs
+
 
 ## Morning in detail
  Time | Topic
